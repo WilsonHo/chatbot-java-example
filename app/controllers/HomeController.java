@@ -1,7 +1,18 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.restfb.DefaultFacebookClient;
+import com.restfb.FacebookClient;
+import com.restfb.Parameter;
+import com.restfb.Version;
+import com.restfb.types.send.IdMessageRecipient;
+import com.restfb.types.send.Message;
+import com.restfb.types.send.SendResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import play.api.libs.json.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -12,6 +23,8 @@ import java.util.Map;
  * to the application's home page.
  */
 public class HomeController extends Controller {
+
+    private static final Logger LOG = LoggerFactory.getLogger(HomeController.class);
 
     /**
      * An action that renders an HTML page with a welcome message.
@@ -47,6 +60,21 @@ public class HomeController extends Controller {
         } else {
             return ok("Hello Wrong");
         }
+    }
+
+    public Result doChatbotJavaExample() {
+        LOG.info("create() {}", request());
+        JsonNode json = request().body().asJson();
+        LOG.info("get request: {}", json.toString());
+        return ok("Hello Wrong");
+    }
+
+    private void sendMessage(IdMessageRecipient recipient, Message message) {
+        FacebookClient pageClient = new DefaultFacebookClient(accessToken, Version.VERSION_3_0);
+
+        SendResponse resp = pageClient.publish("me/messages", SendResponse.class,
+                Parameter.with("recipient", recipient),
+                Parameter.with("message", message));
     }
 
 }
