@@ -1,5 +1,6 @@
 package controllers;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -31,8 +32,15 @@ public class HomeController extends Controller {
             return badRequest();
         }
 
-        String hubToken = queryString.get("hub.verify_token")[0];
-        String hubChallenge = queryString.get("hub.challenge")[0];
+        String hubToken = StringUtils.EMPTY;
+        String hubChallenge = StringUtils.EMPTY;
+        if (queryString.get("hub.verify_token") != null && queryString.get("hub.verify_token").length > 0) {
+            hubToken = queryString.get("hub.verify_token")[0];
+        }
+
+        if (queryString.get("hub.challenge") != null && queryString.get("hub.challenge").length > 0) {
+            hubChallenge = queryString.get("hub.challenge")[0];
+        }
 
         if (verifyToken.equals(hubToken)) {
             return ok(hubChallenge);
