@@ -9,6 +9,5 @@ scalaVersion := "2.11.7"
 libraryDependencies ++= Seq(
   javaJdbc,
   cache,
-  javaWs,
-  "com.restfb" % "restfb" % "2.5.0"
+  javaWs
 )
