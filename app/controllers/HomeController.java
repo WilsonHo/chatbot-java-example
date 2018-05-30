@@ -41,6 +41,7 @@ public class HomeController extends Controller {
 
     public Result chatbotJavaExample() {
         Map<String, String[]> queryString = request().queryString();
+        LOG.info("chatbotJavaExample, request ::: {}", request());
         if (CollectionUtils.isEmpty(queryString)) {
             return badRequest();
         }
