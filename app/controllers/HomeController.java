@@ -10,9 +10,7 @@ import com.restfb.types.send.Message;
 import com.restfb.types.send.SendResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import play.api.libs.json.Json;
+import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -24,7 +22,7 @@ import java.util.Map;
  */
 public class HomeController extends Controller {
 
-    private static final Logger LOG = LoggerFactory.getLogger(HomeController.class);
+    private final Logger.ALogger LOG = Logger.of(this.getClass());
 
     /**
      * An action that renders an HTML page with a welcome message.
@@ -64,16 +62,34 @@ public class HomeController extends Controller {
     }
 
     public Result doChatbotJavaExample() {
-        LOG.info("doChatbotJavaExample, request ::: {}", request());
+        LOG.debug("doChatbotJavaExample, request ::: {}", request());
         JsonNode json = request().body().asJson();
-        LOG.info("doChatbotJavaExample, body ::: {}", json.toString());
-        return ok("Hello Wrong");
+        LOG.debug("doChatbotJavaExample, body ::: {}", json.toString());
+        LOG.debug("demo {}", json.get("object"));
+        LOG.debug("demo {}", json.get("object").equals("page"));
+
+        if ("page".equals(json.get("object").asText())) {
+
+            // Iterate over each entry - there may be multiple if batched
+            JsonNode entries = json.get("entry");
+            LOG.debug("entries ::: {}", entries);
+            entries.forEach(entry -> {
+                JsonNode webhookEvent = entry.get("messaging");
+                LOG.debug("webhook event ::: {}", webhookEvent);
+            });
+            return ok("Hello Wrong I'm here");
+
+        } else {
+            // Return a '404 Not Found' if event is not from a page subscription
+            return badRequest("NOOOOOO");
+        }
     }
 
     private void sendMessage(IdMessageRecipient recipient, Message message) {
         FacebookClient pageClient = new DefaultFacebookClient(accessToken, Version.VERSION_3_0);
 
-        SendResponse resp = pageClient.publish("me/messages", SendResponse.class,
+        SendResponse resp = pageClient.publish("me/messages",
+                SendResponse.class,
                 Parameter.with("recipient", recipient),
                 Parameter.with("message", message));
     }

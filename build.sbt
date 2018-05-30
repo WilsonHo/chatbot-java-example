@@ -12,3 +12,5 @@ libraryDependencies ++= Seq(
   javaWs,
   "com.restfb" % "restfb" % "2.5.0"
 )
+
+logLevel := Level.Debug
