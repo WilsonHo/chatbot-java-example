@@ -63,9 +63,9 @@ public class HomeController extends Controller {
     }
 
     public Result doChatbotJavaExample() {
-        LOG.info("create() {}", request());
+        LOG.info("doChatbotJavaExample, request ::: {}", request());
         JsonNode json = request().body().asJson();
-        LOG.info("get request: {}", json.toString());
+        LOG.info("doChatbotJavaExample, body ::: {}", json.toString());
         return ok("Hello Wrong");
     }
 
